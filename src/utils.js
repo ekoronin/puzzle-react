@@ -1,4 +1,4 @@
-﻿// fischer-yates shuffle algorithm
+// fischer-yates shuffle algorithm
 //does not modify original array
 export const shuffle = (array) => {
     const shuffled = [...array];

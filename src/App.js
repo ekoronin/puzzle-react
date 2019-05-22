@@ -1,18 +1,28 @@
 import React, {Component} from 'react';
-import './App.scss';
 
 import {shuffleWithInversions, formatTime} from './utils'
+
+import Button from './components/Button';
+import WinDialog from './components/WinDialog';
+import PuzzleBoard from './components/PuzzleBoard';
+import PuzzleGame from './components/PuzzleGame';
+import GameTime from './components/GameTime';
+import GameSteps from './components/GameSteps';
+import GameTitle from './components/GameTitle';
+import PuzzleTile from './components/PuzzleTile';
+import TileImage from './components/TileImage';
+
 
 //creates a function with built-in tile size in px and board dimensions
 //the new function creates the original array of tiles
 const boardFactory = (size, dimension) => array => {
-  const tiles = array.map(getTile(size, dimension));
+  const tiles = array.map(makeTile(size, dimension));
   return tiles;
 } 
 
 //creates a factory function to create tiles with size and board dimensions
 //which in turn creates one tile with calculated position and margin offsets
-const getTile = (size, dimension) => (key, index) => {
+const makeTile = (size, dimension) => (key, index) => {
   const kCol = key % dimension;
   const kRow = Math.floor(key / dimension);
   const iCol = index % dimension;
@@ -46,6 +56,7 @@ class App extends Component{
     //bound methods for callbacks
     this.restart = this.restart.bind(this);
     this.tick = this.tick.bind(this);
+    this.solve = this.solve.bind(this);
   }
 
   move(clickedIndex) {
@@ -53,16 +64,17 @@ class App extends Component{
 
     const tiles = [...this.state.tiles];
     const {length} = tiles;
+    const {dimension, size} = this.props;
 
     const clickedKey = tiles[clickedIndex].key;
     const lastIndex = tiles.findIndex(({key}) => key === length-1);
     const lastKey = tiles[lastIndex].key;
     const distance = Math.abs(clickedIndex - lastIndex);
-    const getTile100 = getTile(100, this.props.dimension);
+    const makeCustomTile = makeTile(+size, +dimension);
 
-    if (distance == 1 || distance == this.props.dimension) {
-      tiles[clickedIndex] = getTile100(lastKey, clickedIndex);
-      tiles[lastIndex] = getTile100(clickedKey, lastIndex);
+    if (distance == 1 || distance == dimension) {
+      tiles[clickedIndex] = makeCustomTile(lastKey, clickedIndex);
+      tiles[lastIndex] = makeCustomTile(clickedKey, lastIndex);
       this.setState(({steps}) => ({tiles, steps: steps+1}));
     }
     
@@ -80,10 +92,10 @@ class App extends Component{
 
   //reset the state to the initial and re-builds the puzzle board.
   reset() {
-    const {dimension} = this.props;
+    const {dimension, size} = this.props;
     this.setState({
       ...this.initialState,
-      tiles: boardFactory(100, dimension)(shuffleWithInversions(dimension, new Array(dimension*dimension).fill(0).map((_,i) => i)))
+      tiles: boardFactory(+size, +dimension)(shuffleWithInversions(+dimension, new Array(dimension*dimension).fill(0).map((_,i) => i)))
     })
   }
 
@@ -110,28 +122,40 @@ class App extends Component{
     this.setState(({time}) => ({time: time+1})); 
   }
 
+  solve() {
+    const {dimension, size} = this.props;
+    const tiles = new Array(dimension * dimension).fill(0).map((_, i) => i).map(makeTile(+size, +dimension));
+    this.setState({tiles});
+    this.won();
+  }
+
   //renders the component
   render(){
-    const last = this.props.dimension * this.props.dimension - 1;
+    const {image, cheating, ...layout} = this.props;
+    const {dimension} = layout;
+    const last = dimension * dimension - 1;
+
     return (
-      <div className="game">
-        <span id="title">EK's Puzzle Game</span>
-        <div id="time">Time: {formatTime(this.state.time)}</div>
-        <div id="steps">Steps: {this.state.steps}</div>
-        <div className="board">
-        {this.state.won && <div className="won">You Won!!!</div>}        
+      <PuzzleGame {...layout}>
+        <GameTitle>EK's Puzzle Game {`${dimension}x${dimension}`}</GameTitle>
+        <GameTime>Time: {formatTime(this.state.time)}</GameTime>
+        <GameSteps>Steps: {this.state.steps}</GameSteps>
+        <PuzzleBoard {...layout}>
+        {this.state.won && <WinDialog size={this.props.size}>You Won!!!</WinDialog>}        
         {this.state.tiles.map(({xy:[x,y], key, style}, index) => {
-            return <div key={key}
-                        className={key !== last ? 'tile':'tile last'}
+            return <PuzzleTile {...layout}
+                        key={key}
+                        last={key == last}
                         style={{transform: `translate3d(${x}px, ${y}px, 0px)`}}
                         onClick={() => this.move(index)}>
-                          <img src={this.props.image} style={style}/>
-                    </div>
+                          <TileImage {...layout} src={image} style={style}/>
+                    </PuzzleTile>
           }) 
         }
-      </div>
-        <button onClick={this.restart}>Restart</button>
-      </div>
+        </PuzzleBoard>
+        <Button onClick={this.restart}>Restart</Button>
+        {cheating && <Button onClick={this.solve}>Solve</Button>}
+      </PuzzleGame>
     );
   }
 }
