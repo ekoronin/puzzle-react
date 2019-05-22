@@ -1,0 +1,23 @@
+{
+  "name": "puzzle-game",
+  "version": "1.0.1",
+  "description": "Puzzle Game test assignment from MediaMonks",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html --public-url ./"
+  },
+  "keywords": [],
+  "author": "Evgenij Koronin",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "cssnano": "^4.1.10"
+  },
+  "dependencies": {
+    "node-sass": "^4.12.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  }
+}
