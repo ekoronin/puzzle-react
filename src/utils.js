@@ -1,4 +1,4 @@
-// fischer-yates shuffle algorithm
+﻿// fischer-yates shuffle algorithm
 //does not modify original array
 export const shuffle = (array) => {
     const shuffled = [...array];
@@ -45,7 +45,7 @@ export const shuffleWithInversions = (dimension, array) => {
     let newArray = [...array];
     do {
       newArray = shuffle(newArray);
-    } while (solvable(dimension, newArray))
+    } while (!solvable(dimension, newArray))
     
     return newArray;
   }
