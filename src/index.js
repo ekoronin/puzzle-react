@@ -18,7 +18,7 @@ const initialState = {
   };
 
 const reducers = combineReducers(Reducers);
-export const store33 = createStore(reducers, initialState,window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+export const store33 = createStore(reducers, initialState, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 export const store44 = createStore(reducers, initialState);
 export const store55 = createStore(reducers, initialState);
   

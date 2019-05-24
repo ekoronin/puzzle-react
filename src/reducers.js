@@ -26,11 +26,12 @@ const makeTile = (size, dimension) => (key, index) => {
     }
 }
 
-export const tiles = (tiles = [], action) => {
-    const {index, dimension, size} = action;
+export const tiles = (state = [], action) => {
+    const {index, dimension, size} = action.payload || {};
 
     switch (action.type) {
       case 'PUZZLE_MOVE': {
+        const tiles = [...state]; //do not mutate the state
         const {length} = tiles;
         const key = tiles[index].key;
         const lastIndex = tiles.findIndex(({key}) => key === length-1);
@@ -50,8 +51,12 @@ export const tiles = (tiles = [], action) => {
       case 'PUZZLE_SOLVE': {
         return new Array(dimension * dimension).fill(0).map((_, i) => i).map(makeTile(+size, +dimension));
       }
+      case 'PUZZLE_RESIZE': {
+        const tiles = [...state]; //do not mutate the state
+        return boardFactory(+size, +dimension)(tiles.map(({key}) => key));
+      }
       default:
-        return tiles;
+        return state;
     }
   };
 

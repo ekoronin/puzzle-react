@@ -12,7 +12,7 @@ import TileImage from './components/TileImage';
 
 import {formatTime} from './utils'
 
-import { connect } from 'react-redux';
+import { connect, batch } from 'react-redux';
 import * as Actions from './actions'
 
 
@@ -35,17 +35,28 @@ class App extends Component{
     clearInterval(this.timer);
   }
 
+  shouldComponentUpdate (nextProps, nextState) {
+    const {dimension, size, onResize, onRestart} = this.props;
+    if (nextProps.dimension !== dimension) {
+      onRestart(nextProps.dimension, size); //cannot continue game with a different dimension = restart
+    }  
+    if (nextProps.size !== size) {
+      onResize(dimension, nextProps.size);
+    }
+    return true;
+  }
+
 
   move(index) {
-    const {tiles, dimension, size, won} = this.props;
+    const {tiles, dimension, size, won, onMove, onWin} = this.props;
 
     if (won) return; //game ended
    //dispatch action
-    this.props.move(index, dimension, size);
+    onMove(index, dimension, size);
     //check we won
     if (tiles.every(({key}, index) => key === index)) {
       //dispatch action
-      this.props.win();
+      onWin();
     }
   }
 
@@ -56,26 +67,29 @@ class App extends Component{
     //clear score and time
     //shuffle the board
     //start game timer
-    const {dimension, size} = this.props;
+    const {dimension, size, onRestart, onTick} = this.props;
     this.timer && clearInterval(this.timer);
     //dispacth action
-    this.props.restart(dimension, size);
-    this.timer = setInterval(this.props.tick, 1000);
+    onRestart(dimension, size);
+    this.timer = setInterval(onTick, 1000);
   }
 
 
 
   solve() {
-    const {dimension, size} = this.props;
-    this.props.solve(dimension, size);
-    this.props.win();
+    const {dimension, size, onSolve, onWin} = this.props;
+    //do one render only by batching actions
+    //batch(()=>{
+      onSolve(dimension, size);
+      onWin();
+    //});
   }
 
   //when you solved the puzzle, change the flag and present "You Won" message.
   win() {
     this.timer && clearInterval(this.timer);
     //dispatch action
-    this.props.win()
+    this.props.onWin()
   }
 
   //renders the component
@@ -109,12 +123,10 @@ class App extends Component{
 }
 
 //redux bindings
-
-const mapStateToProps = (state) => ({...state});
-const mapDispatchToProps = Actions;
+const mapStateToProps = state => ({...state});
 const AppHOC = connect(
   mapStateToProps,
-  mapDispatchToProps
+  Actions
 )(App);
 
 export default AppHOC;

@@ -1,28 +1,42 @@
 import { PUZZLE_MOVE, PUZZLE_RESTART, PUZZLE_SOLVE, PUZZLE_WON } from './const';
 
-export const move = (index, dimension, size) => ({
+export const onMove = (index, dimension, size) => ({
     type: 'PUZZLE_MOVE',
-    index,
+    payload: {
+      index,
+      dimension, 
+      size
+    }
+  });
+
+export const onRestart = (dimension, size) => ({
+  type: 'PUZZLE_RESTART',
+  payload: {
     dimension, 
     size
-  });
+  }
+});
 
-  export const restart = (dimension, size) => ({
-    type: 'PUZZLE_RESTART',
+export const onResize = (dimension, size) => ({
+  type: 'PUZZLE_RESIZE',
+  payload: {
     dimension, 
     size
-  });
+  }
+});
 
-  export const solve = (dimension, size) => ({
-    type: 'PUZZLE_SOLVE',
+export const onSolve = (dimension, size) => ({
+  type: 'PUZZLE_SOLVE',
+  payload: {
     dimension, 
     size
-  });
+  }
+});
 
-  export const win = () => ({
-    type: 'PUZZLE_WON',
-  });
+export const onWin = () => ({
+  type: 'PUZZLE_WON',
+});
 
-  export const tick = () => ({
-    type: 'PUZZLE_TICK',
-  });
+export const onTick = () => ({
+  type: 'PUZZLE_TICK',
+});
