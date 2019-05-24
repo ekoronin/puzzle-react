@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 import Button from './components/Button';
 import WinDialog from './components/WinDialog';
@@ -11,6 +12,7 @@ import PuzzleTile from './components/PuzzleTile';
 import TileImage from './components/TileImage';
 
 import {formatTime} from './utils'
+import monks from "./monks.jpg";
 
 import { connect, batch } from 'react-redux';
 import * as Actions from './actions'
@@ -19,6 +21,17 @@ import * as Actions from './actions'
 
 
 class App extends Component{
+  static propTypes = {
+    dimension: PropTypes.number.isRequired,
+    size: PropTypes.number.isRequired,
+    image: PropTypes.string.isRequired
+  };
+  static defaultProps = {
+    dimension: 3,
+    size: 100,
+    image: monks
+  };
+
   constructor(props) {
     super(props);
     this.timer = 0;

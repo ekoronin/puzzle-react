@@ -37,7 +37,7 @@ export const tiles = (state = [], action) => {
         const lastIndex = tiles.findIndex(({key}) => key === length-1);
         const lastKey = tiles[lastIndex].key;
         const distance = Math.abs(index - lastIndex);
-        const makeCustomTile = makeTile(+size, +dimension);
+        const makeCustomTile = makeTile(size, dimension);
     
         if (distance == 1 || distance == dimension) {
           tiles[index] = makeCustomTile(lastKey, index);
@@ -46,14 +46,15 @@ export const tiles = (state = [], action) => {
         return tiles;
       }
       case 'PUZZLE_RESTART': {
-        return boardFactory(+size, +dimension)(shuffleWithInversions(+dimension, new Array(dimension*dimension).fill(0).map((_,i) => i)));
+        //it is a little problematic that the shuffle makes this part not pure, but this is the easiest thing to do
+        return boardFactory(size, dimension)(shuffleWithInversions(dimension, new Array(dimension*dimension).fill(0).map((_,i) => i)));
       }
       case 'PUZZLE_SOLVE': {
-        return new Array(dimension * dimension).fill(0).map((_, i) => i).map(makeTile(+size, +dimension));
+        return new Array(dimension * dimension).fill(0).map((_, i) => i).map(makeTile(size, dimension));
       }
       case 'PUZZLE_RESIZE': {
         const tiles = [...state]; //do not mutate the state
-        return boardFactory(+size, +dimension)(tiles.map(({key}) => key));
+        return boardFactory(size, dimension)(tiles.map(({key}) => key));
       }
       default:
         return state;
