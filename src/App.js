@@ -38,10 +38,12 @@ class App extends Component{
   shouldComponentUpdate (nextProps, nextState) {
     const {dimension, size, onResize, onRestart} = this.props;
     if (nextProps.dimension !== dimension) {
-      onRestart(nextProps.dimension, size); //cannot continue game with a different dimension = restart
+      //dispatch action
+      onRestart(nextProps.dimension, size); //cannot continue the game with a different dimension = restart
     }  
     if (nextProps.size !== size) {
-      onResize(dimension, nextProps.size);
+      //dispacth action
+      onResize(dimension, nextProps.size); //just resize the tiles
     }
     return true;
   }
@@ -55,8 +57,7 @@ class App extends Component{
     onMove(index, dimension, size);
     //check we won
     if (tiles.every(({key}, index) => key === index)) {
-      //dispatch action
-      onWin();
+      this.win();
     }
   }
 
@@ -77,12 +78,10 @@ class App extends Component{
 
 
   solve() {
-    const {dimension, size, onSolve, onWin} = this.props;
-    //do one render only by batching actions
-    //batch(()=>{
-      onSolve(dimension, size);
-      onWin();
-    //});
+    const {dimension, size, onSolve} = this.props;
+    //dispatch action
+    onSolve(dimension, size);
+    this.win();
   }
 
   //when you solved the puzzle, change the flag and present "You Won" message.
