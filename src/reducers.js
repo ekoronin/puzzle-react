@@ -51,15 +51,14 @@ export const tiles = (state = [], action) => {
       return boardFactory(size, dimension)(
         shuffleWithInversions(
           dimension,
-          new Array(dimension * dimension).fill(0).map((_, i) => i)
+          Array.from({ length: dimension * dimension }, (_, i) => i)
         )
       );
     }
     case "PUZZLE_SOLVE": {
-      return new Array(dimension * dimension)
-        .fill(0)
-        .map((_, i) => i)
-        .map(makeTile(size, dimension));
+      return Array.from({ length: dimension * dimension }, (_, i) => i).map(
+        makeTile(size, dimension)
+      );
     }
     case "PUZZLE_RESIZE": {
       return boardFactory(size, dimension)(state.map(({ key }) => key));
