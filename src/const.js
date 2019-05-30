@@ -3,5 +3,4 @@ export const PUZZLE_RESTART = "PUZZLE_RESTART";
 export const PUZZLE_SOLVE = "PUZZLE_SOLVE";
 export const PUZZLE_WON = "PUZZLE_WON";
 export const PUZZLE_TICK = "PUZZLE_TICK";
-export const PUZZLE_RESIZE= "PUZZLE_RESIZE";
-
+export const PUZZLE_RESIZE = "PUZZLE_RESIZE";

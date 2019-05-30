@@ -46,7 +46,8 @@ export const tiles = (state = [], action) => {
       return tiles;
     }
     case "PUZZLE_RESTART": {
-      //it is a little problematic that the shuffle makes this part not pure, but this is the easiest thing to do
+      //it is a little problematic that the shuffle makes this part not pure,
+      //but this is the easiest thing to do
       return boardFactory(size, dimension)(
         shuffleWithInversions(
           dimension,
@@ -61,8 +62,7 @@ export const tiles = (state = [], action) => {
         .map(makeTile(size, dimension));
     }
     case "PUZZLE_RESIZE": {
-      const tiles = [...state]; //do not mutate the state
-      return boardFactory(size, dimension)(tiles.map(({ key }) => key));
+      return boardFactory(size, dimension)(state.map(({ key }) => key));
     }
     default:
       return state;

@@ -29,13 +29,7 @@ class App extends Component {
     image: monks
   };
 
-  constructor(props) {
-    super(props);
-    this.timer = 0;
-
-    this.restart = this.restart.bind(this);
-    this.solve = this.solve.bind(this);
-  }
+  timer = 0;
 
   componentDidMount() {
     this.restart();
@@ -58,7 +52,7 @@ class App extends Component {
     return true;
   }
 
-  move(index) {
+  move = index => {
     const { tiles, dimension, size, won, onMove, onWin } = this.props;
 
     if (won) return; //game ended
@@ -68,10 +62,10 @@ class App extends Component {
     if (tiles.every(({ key }, index) => key === index)) {
       this.win();
     }
-  }
+  };
 
   //restarts the puzzle game by resetting the state and rebuilding the board
-  restart() {
+  restart = () => {
     //clear score and time
     //shuffle the board
     //start game timer
@@ -80,21 +74,21 @@ class App extends Component {
     //dispacth action
     onRestart(dimension, size);
     this.timer = setInterval(onTick, 1000);
-  }
+  };
 
-  solve() {
+  solve = () => {
     const { dimension, size, onSolve } = this.props;
     //dispatch action
     onSolve(dimension, size);
     this.win();
-  }
+  };
 
   //when you solved the puzzle, change the flag and present "You Won" message.
-  win() {
+  win = () => {
     this.timer && clearInterval(this.timer);
     //dispatch action
     this.props.onWin();
-  }
+  };
 
   //renders the component
   render() {
